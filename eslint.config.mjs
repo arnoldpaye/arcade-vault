@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Prototipo de diseño (React 18 + Babel en el navegador), fuera del build de Next.
+    "references/**",
   ]),
 ]);
 
