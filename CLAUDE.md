@@ -1,36 +1,44 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Este archivo guía a Claude Code (claude.ai/code) al trabajar con el código de este repositorio.
 
 @AGENTS.md
 
-## Project
+## Idioma
 
-Arcade Vault: an online platform to play games and compete for the highest score (UI copy is in Spanish). Development follows Spec Driven Design via the `/spec` and `/spec-impl` skills from `Klerith/fernando-skills` (`npx skills@latest add Klerith/fernando-skills`).
+El proyecto se desarrolla en español: responde, documenta, escribe comentarios y mensajes de commit en español. Los identificadores de código, comandos y rutas se mantienen tal cual.
 
-## Commands
+## Proyecto
 
-- `npm run dev` — dev server (Turbopack)
-- `npm run build` — production build (also the type check; there is no separate `tsc` script)
-- `npm run lint` — ESLint 9 flat config (`eslint-config-next` core-web-vitals + typescript)
+Arcade Vault: una plataforma online para jugar juegos y competir por la puntuación más alta (los textos de la UI están en español). El desarrollo sigue Spec Driven Design mediante los skills `/spec` y `/spec-impl` de `Klerith/fernando-skills` (`npx skills@latest add Klerith/fernando-skills`).
 
-No test framework is configured yet.
+## Comandos
 
-## Stack and config notes
+- `npm run dev` — servidor de desarrollo (Turbopack)
+- `npm run build` — build de producción (también hace el chequeo de tipos; no hay un script `tsc` separado)
+- `npm run lint` — ESLint 9 con flat config (`eslint-config-next` core-web-vitals + typescript)
+
+Todavía no hay framework de pruebas configurado.
+
+## Stack y notas de configuración
 
 - Next.js 16.4 App Router (`app/`), React 19.3, TypeScript strict, Tailwind CSS v4.
-- Next.js APIs differ from training data: read `node_modules/next/dist/docs/` (`01-app`, `03-architecture`, …) before writing Next code.
-- `next.config.ts` enables `cacheComponents`, `partialPrefetching`, and `experimental.agentFeedback`. With Cache Components on, data fetching/caching follows the `"use cache"` / Suspense model — check the docs before adding dynamic data access.
-- Tailwind is wired through a Turbopack loader rule (`@tailwindcss/turbopack` on `*.css`), not PostCSS. Theme tokens live in `app/globals.css` under `@theme inline`.
-- Layout props use the generated global type `LayoutProps<"/">` (see `app/layout.tsx`); page props likewise use `PageProps<...>`.
-- Path alias `@/*` maps to the repo root.
+- Las APIs de Next.js difieren de los datos de entrenamiento: lee `node_modules/next/dist/docs/` (`01-app`, `03-architecture`, …) antes de escribir código de Next.
+- `next.config.ts` habilita `cacheComponents`, `partialPrefetching` y `experimental.agentFeedback`. Con Cache Components activo, la obtención y el cacheo de datos siguen el modelo `"use cache"` / Suspense — revisa la documentación antes de añadir acceso a datos dinámicos.
+- Tailwind se integra mediante una regla de loader de Turbopack (`@tailwindcss/turbopack` sobre `*.css`), no con PostCSS. Los tokens del tema viven en `app/globals.css` bajo `@theme inline`.
+- Las props de layout usan el tipo global generado `LayoutProps<"/">` (ver `app/layout.tsx`); las props de página usan igualmente `PageProps<...>`.
+- El alias de ruta `@/*` apunta a la raíz del repositorio.
 
-## `references/` — design prototype
+## Skills
 
-`references/` holds a standalone React 18 + Babel-in-browser prototype (`Arcade Vault.html`) that is the visual/functional reference for the app. It is not part of the Next build. Key pieces:
+Usa `/frontend-design` al crear o rediseñar pantallas y componentes de UI.
 
-- `data.jsx` — mock data: `GAMES` (id, title, short/long description, `cat`, cover class, color, best score, plays), `CATS`, `PLAYERS`, `seededScores()`.
-- `app.jsx` — hash-based router with screens `biblioteca` (Library), `detalle` (GameDetail), `player` (GamePlayer), `auth` (Auth), `salon` (HallOfFame); user and scores persisted in `localStorage` (`av_user`, `av_scores`).
-- `styles.css` — full retro/neon theme (`av-*` classes, CSS variables like `--line`, `--ink-faint`, `--mono`); fonts Press Start 2P, Courier Prime, JetBrains Mono.
+## `references/` — prototipo de diseño
 
-When porting a screen, map it to an App Router route and reuse the prototype's data shapes and styling.
+`references/` contiene un prototipo independiente en React 18 + Babel en el navegador (`Arcade Vault.html`) que es la referencia visual y funcional de la app. No forma parte del build de Next. Piezas clave:
+
+- `data.jsx` — datos mock: `GAMES` (id, título, descripción corta/larga, `cat`, clase de portada, color, mejor puntuación, partidas), `CATS`, `PLAYERS`, `seededScores()`.
+- `app.jsx` — router basado en hash con las pantallas `biblioteca` (Library), `detalle` (GameDetail), `player` (GamePlayer), `auth` (Auth), `salon` (HallOfFame); usuario y puntuaciones persistidos en `localStorage` (`av_user`, `av_scores`).
+- `styles.css` — tema retro/neón completo (clases `av-*`, variables CSS como `--line`, `--ink-faint`, `--mono`); fuentes Press Start 2P, Courier Prime, JetBrains Mono.
+
+Al portar una pantalla, asígnala a una ruta del App Router y reutiliza las estructuras de datos y estilos del prototipo.
