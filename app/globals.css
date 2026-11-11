@@ -45,9 +45,12 @@
   --bronze: #d97a3a;
   --line: rgba(0, 245, 255, 0.18);
   --line-2: rgba(255, 255, 255, 0.06);
-  /* Fuentes cargadas con next/font en app/layout.tsx */
-  --pixel: var(--font-press-start-2p), system-ui, monospace;
-  --mono: var(--font-jetbrains-mono), var(--font-courier-prime), "Courier New", monospace;
+  /* Fuentes cargadas con next/font en app/layout.tsx. Se referencian por nombre de familia
+     (no con var(--font-*)) para omitir las caras "<Familia> Fallback" que genera next/font:
+     cubren U+0-10FFFF con size-adjust y dibujaban glifos fuera del subset latin (p. ej. "▲"
+     en la portada de ROCAS) más grandes que en el prototipo. */
+  --pixel: "Press Start 2P", system-ui, monospace;
+  --mono: "JetBrains Mono", "Courier Prime", "Courier New", monospace;
 }
 
 * { box-sizing: border-box; }
