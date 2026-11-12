@@ -14,7 +14,7 @@ export default function NotFound() {
         <p className="mono" style={{ color: "var(--ink-dim)", letterSpacing: "0.12em", marginBottom: 28 }}>
           El cartucho que buscas no está en el vault.
         </p>
-        <Link href="/" className="btn lg">
+        <Link href="/juegos" className="btn lg">
           VOLVER AL VAULT
         </Link>
       </div>

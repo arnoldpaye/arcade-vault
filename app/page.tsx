@@ -1,6 +1,6 @@
-import { Library } from "@/components/library";
+import { Home } from "@/components/home";
 
-// Biblioteca: pantalla principal del vault.
-export default function Home() {
-  return <Library />;
+// Inicio: landing de presentación del vault.
+export default function HomePage() {
+  return <Home />;
 }
