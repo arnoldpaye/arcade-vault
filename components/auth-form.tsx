@@ -17,12 +17,12 @@ export function AuthForm() {
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setUser({ name: (user || "PLAYER1").toUpperCase().slice(0, 10) });
-    router.push("/");
+    router.push("/juegos");
   };
 
   const asGuest = () => {
     setUser(null);
-    router.push("/");
+    router.push("/juegos");
   };
 
   return (

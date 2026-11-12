@@ -5,12 +5,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { setUser, useUser } from "@/lib/storage";
 
-type Section = "biblioteca" | "salon" | "acceso";
+type Section = "inicio" | "biblioteca" | "salon" | "acerca" | "acceso";
 
-// Biblioteca queda activa también en el detalle y el reproductor (/juegos/*).
+// Inicio solo en "/"; Biblioteca queda activa también en el detalle y el reproductor (/juegos/*).
 function sectionOf(pathname: string): Section | null {
-  if (pathname === "/" || pathname.startsWith("/juegos")) return "biblioteca";
+  if (pathname === "/") return "inicio";
+  if (pathname === "/juegos" || pathname.startsWith("/juegos/")) return "biblioteca";
   if (pathname.startsWith("/salon")) return "salon";
+  if (pathname.startsWith("/acerca")) return "acerca";
   if (pathname.startsWith("/acceso")) return "acceso";
   return null;
 }
@@ -34,8 +36,11 @@ export function Nav() {
           </div>
         </Link>
         <div className="links">
-          <Link href="/" className={cls("biblioteca")}>Biblioteca</Link>
+          <Link href="/" className={cls("inicio")}>Inicio</Link>
+          <Link href="/juegos" className={cls("biblioteca")}>Biblioteca</Link>
           <Link href="/salon" className={cls("salon")}>Salón de la Fama</Link>
+          {/* prefetch={false} en "Acerca de": /acerca aún no existe y el prefetch dejaba 404 en consola. */}
+          <Link href="/acerca" prefetch={false} className={cls("acerca")}>Acerca de</Link>
         </div>
         <div className="spacer"></div>
         <div className="coin-counter">
@@ -59,8 +64,10 @@ export function Nav() {
       <div className={"av-mobile-backdrop" + (open ? " open" : "")} onClick={close}></div>
       <aside className={"av-mobile-panel" + (open ? " open" : "")}>
         <div className="pixel neon-cyan" style={{ fontSize: 11, marginBottom: 16 }}>MENÚ</div>
-        <Link href="/" className={cls("biblioteca")} onClick={close}>Biblioteca</Link>
+        <Link href="/" className={cls("inicio")} onClick={close}>Inicio</Link>
+        <Link href="/juegos" className={cls("biblioteca")} onClick={close}>Biblioteca</Link>
         <Link href="/salon" className={cls("salon")} onClick={close}>Salón de la Fama</Link>
+        <Link href="/acerca" prefetch={false} className={cls("acerca")} onClick={close}>Acerca de</Link>
         <Link href="/acceso" className={cls("acceso")} onClick={close}>
           {user ? "Cuenta" : "Iniciar Sesión"}
         </Link>
