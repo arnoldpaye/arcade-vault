@@ -1,9 +1,7 @@
 // Datos mock portados de references/data.jsx.
-
 export type Category = "ARCADE" | "PUZZLE" | "SHOOTER" | "VERSUS";
 export type CategoryFilter = "TODOS" | Category;
 export type GameColor = "cyan" | "magenta" | "yellow" | "green";
-
 export type Game = {
   /** Slug usado en /juegos/[id] */
   id: string;
@@ -18,7 +16,6 @@ export type Game = {
   /** Ya formateado, p. ej. "12.4K" */
   plays: string;
 };
-
 export type ScoreRow = {
   rank: number;
   name: string;
@@ -26,7 +23,6 @@ export type ScoreRow = {
   /** Formato "DD/MM/2026" */
   date: string;
 };
-
 export const GAMES: Game[] = [
   {
     id: "bloque-buster",
@@ -116,20 +112,42 @@ export const GAMES: Game[] = [
     best: 24,
     plays: "4.2K",
   },
+  {
+    id: "asteroides",
+    title: "ASTEROIDES",
+    short: "Pilota tu nave y pulveriza el campo de asteroides.",
+    long: "Una nave triangular en un espacio sin bordes: lo que sale por un lado entra por el otro. Rota, propulsa y dispara para partir las rocas grandes en medianas y las medianas en pequeñas. Atrapa el power-up 3x para disparar en abanico.",
+    cat: "SHOOTER",
+    cover: "cover-rocas",
+    color: "cyan",
+    best: 0,
+    plays: "0",
+  },
 ];
-
 export const CATS: CategoryFilter[] = ["TODOS", "ARCADE", "PUZZLE", "SHOOTER", "VERSUS"];
-
 export const PLAYERS: string[] = [
-  "PX_KAI", "NEONFOX", "Z3R0COOL", "M00NRYU", "VAULT_07", "GLITCHA",
-  "ATARI_KID", "CYBER_LU", "MAGENTA88", "SCANLINE", "BIT_LORD", "ARKADYA",
-  "DROID_X", "RGB_QUEEN", "PIXEL_DAD", "RETROVIRA", "VECTORX", "JOY_STK",
+  "PX_KAI",
+  "NEONFOX",
+  "Z3R0COOL",
+  "M00NRYU",
+  "VAULT_07",
+  "GLITCHA",
+  "ATARI_KID",
+  "CYBER_LU",
+  "MAGENTA88",
+  "SCANLINE",
+  "BIT_LORD",
+  "ARKADYA",
+  "DROID_X",
+  "RGB_QUEEN",
+  "PIXEL_DAD",
+  "RETROVIRA",
+  "VECTORX",
+  "JOY_STK",
 ];
-
 export function getGame(id: string): Game | undefined {
   return GAMES.find((g) => g.id === id);
 }
-
 /** Ranking determinista: misma semilla, mismas filas (mismo algoritmo que el prototipo). */
 export function seededScores(seed: number, count = 12): ScoreRow[] {
   let s = seed;
@@ -150,23 +168,18 @@ export function seededScores(seed: number, count = 12): ScoreRow[] {
   }
   return rows.sort((a, b) => b.score - a.score).map((r, i) => ({ ...r, rank: i + 1 }));
 }
-
 /** Formato numérico de la UI. */
 export function formatScore(n: number): string {
   return n.toLocaleString("es-ES");
 }
-
 // ===== Inicio (landing) — datos estáticos copiados de references/home-about/home.jsx =====
-
 export type HomeFeature = {
   icon: "GAMEPAD" | "FREE" | "TROPHY" | "ROCKET";
   title: string;
   desc: string;
   color: GameColor;
 };
-
 export type HomeStat = { n: string; u: string; s: string };
-
 export type ActivityRow = {
   player: string;
   game: string; // título visible, p. ej. "Caída"
@@ -174,11 +187,8 @@ export type ActivityRow = {
   ago: string; // ya formateado, p. ej. "hace 2 min"
   color: GameColor;
 };
-
 export type TopPlayerRow = { rank: number; player: string; score: number };
-
 export type FaqItem = { q: string; a: string };
-
 /** Tarjetas de "¿POR QUÉ ARCADE VAULT?" (copy adaptado al catálogo propio). */
 export const HOME_FEATURES: HomeFeature[] = [
   {
@@ -206,14 +216,12 @@ export const HOME_FEATURES: HomeFeature[] = [
     color: "green",
   },
 ];
-
 /** Franja de stats. */
 export const HOME_STATS: HomeStat[] = [
   { n: "8+", u: "JUEGOS", s: "Y CONTANDO" },
   { n: "MILES", u: "DE PARTIDAS", s: "JUGADAS CADA DÍA" },
   { n: "GLOBAL", u: "RANKING", s: "COMPITE CON EL MUNDO" },
 ];
-
 /** Ticker de "ÚLTIMAS PUNTUACIONES". */
 export const HOME_ACTIVITY: ActivityRow[] = [
   { player: "NEONFOX", game: "Caída", score: 184220, ago: "hace 2 min", color: "magenta" },
@@ -224,7 +232,6 @@ export const HOME_ACTIVITY: ActivityRow[] = [
   { player: "ARKADYA", game: "Serpentina", score: 7820, ago: "hace 24 min", color: "green" },
   { player: "CYBER_LU", game: "Ranaria", score: 18900, ago: "hace 31 min", color: "yellow" },
 ];
-
 /** "TOP JUGADORES · HOY". */
 export const HOME_TOP_TODAY: TopPlayerRow[] = [
   { rank: 1, player: "NEONFOX", score: 312840 },
@@ -233,7 +240,6 @@ export const HOME_TOP_TODAY: TopPlayerRow[] = [
   { rank: 4, player: "VAULT_07", score: 154300 },
   { rank: 5, player: "GLITCHA", score: 138900 },
 ];
-
 /** Preguntas frecuentes de "PRECIOS". */
 export const HOME_FAQ: FaqItem[] = [
   {
