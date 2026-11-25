@@ -1,6 +1,7 @@
 import { Library } from "@/components/library";
-
-// Biblioteca: listado de juegos del vault.
-export default function JuegosPage() {
-  return <Library />;
+import { getGames } from "@/lib/supabase/queries";
+// Biblioteca: listado de juegos del vault, leído de Supabase.
+export default async function JuegosPage() {
+  const games = await getGames();
+  return <Library games={games} />;
 }
