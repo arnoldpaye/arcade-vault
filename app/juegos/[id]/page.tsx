@@ -1,19 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatScore, GAMES, getGame, seededScores } from "@/lib/data";
-
-export function generateStaticParams() {
-  return GAMES.map((g) => ({ id: g.id }));
+import { formatScore } from "@/lib/data";
+import { getGameById, getGames, getLeaderboard } from "@/lib/supabase/queries";
+// Fuera de la validación de navegación instantánea (Partial Prefetching): la página lee
+// `params` sin <Suspense>. Las 9 fichas se pre-renderizan igualmente con generateStaticParams.
+export const instant = false;
+export async function generateStaticParams() {
+  const games = await getGames();
+  return games.map((g) => ({ id: g.id }));
 }
-
 export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]">) {
   const { id } = await params;
-  const game = getGame(id);
+  const [game, scores] = await Promise.all([getGameById(id), getLeaderboard(id, 10)]);
   if (!game) notFound();
-
-  // Misma semilla que el prototipo para obtener el mismo ranking.
-  const scores = seededScores(id.length * 17 + 3, 10);
-
   return (
     <div className="av-detail fade-in">
       <div>
@@ -36,13 +35,19 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
             </div>
             <div>
               <div className="l">Mejor global</div>
-              <div className="v" style={{ color: "var(--magenta)", textShadow: "0 0 6px rgba(255,0,110,0.5)" }}>
+              <div
+                className="v"
+                style={{ color: "var(--magenta)", textShadow: "0 0 6px rgba(255,0,110,0.5)" }}
+              >
                 {formatScore(game.best)}
               </div>
             </div>
             <div>
               <div className="l">Dificultad</div>
-              <div className="v" style={{ color: "var(--yellow)", textShadow: "0 0 6px rgba(245,255,0,0.5)" }}>
+              <div
+                className="v"
+                style={{ color: "var(--yellow)", textShadow: "0 0 6px rgba(245,255,0,0.5)" }}
+              >
                 ★ ★ ★ ☆ ☆
               </div>
             </div>
@@ -57,16 +62,22 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
           </div>
         </div>
       </div>
-
       <aside>
         <div className="leaderboard">
           <h3>MEJORES PUNTUACIONES</h3>
           {scores.map((r, i) => (
-            <div key={r.name} className={"lb-row" + (i === 0 ? " top1" : i === 1 ? " top2" : i === 2 ? " top3" : "")}>
+            <div
+              key={r.name}
+              className={
+                "lb-row" + (i === 0 ? " top1" : i === 1 ? " top2" : i === 2 ? " top3" : "")
+              }
+            >
               <div className="rk">#{String(r.rank).padStart(2, "0")}</div>
               <div className="pl">
                 {r.name}
-                <div style={{ fontSize: 10, color: "var(--ink-faint)", letterSpacing: "0.1em" }}>{r.date}</div>
+                <div style={{ fontSize: 10, color: "var(--ink-faint)", letterSpacing: "0.1em" }}>
+                  {r.date}
+                </div>
               </div>
               <div className="sc">{formatScore(r.score)}</div>
             </div>

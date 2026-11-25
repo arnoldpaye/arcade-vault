@@ -172,6 +172,12 @@ export function seededScores(seed: number, count = 12): ScoreRow[] {
 export function formatScore(n: number): string {
   return n.toLocaleString("es-ES");
 }
+/** Partidas en formato compacto: 12 → "12", 12400 → "12.4K", 3200000 → "3.2M". */
+export function formatPlays(n: number): string {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
+  return String(n);
+}
 // ===== Inicio (landing) — datos estáticos copiados de references/home-about/home.jsx =====
 export type HomeFeature = {
   icon: "GAMEPAD" | "FREE" | "TROPHY" | "ROCKET";

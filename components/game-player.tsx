@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useRef, useState, type MouseEvent } from "react";
+import { useCallback, useRef, useState, useTransition, type MouseEvent } from "react";
+import { submitScore } from "@/app/juegos/[id]/jugar/actions";
 import { GameCanvas } from "@/components/game-canvas";
 import { formatScore, type Game } from "@/lib/data";
 import { GAME_ENGINES } from "@/lib/games";
 import type { GameEngine, GameEngineFactory, HudState } from "@/lib/games/types";
-import { saveScore, useUser } from "@/lib/storage";
+import { useUser } from "@/lib/storage";
 // Juegos sin motor en GAME_ENGINES: arena decorativa con la puntuación fija en 0 (MVP visual).
 const INITIAL_HUD: HudState = { score: 0, lives: 3, level: 1, tripleShot: 0 };
 /** Quita el foco del botón para que Espacio dispare en el juego y no vuelva a pulsarlo. */
@@ -22,12 +23,15 @@ export function GamePlayer({ game }: { game: Game }) {
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saving, startSaving] = useTransition();
   // null = aún no editado: se muestra el usuario actual o "INVITADO".
   const [nameInput, setNameInput] = useState<string | null>(null);
   const name = nameInput ?? user?.name ?? "INVITADO";
   const onGameOver = useCallback((score: number) => {
     setFinalScore(score);
     setSaved(false);
+    setSaveError(null);
     setOver(true);
   }, []);
   const togglePause = (e: MouseEvent<HTMLButtonElement>) => {
@@ -46,11 +50,21 @@ export function GamePlayer({ game }: { game: Game }) {
     setPaused(false);
     setOver(false);
     setSaved(false);
+    setSaveError(null);
     engineRef.current?.restart();
   };
   const onSave = () => {
-    saveScore({ game: game.id, score: finalScore, name });
-    setSaved(true);
+    setSaveError(null);
+    startSaving(async () => {
+      try {
+        const res = await submitScore({ gameId: game.id, playerName: name, score: finalScore });
+        if (res.ok) setSaved(true);
+        else setSaveError(res.error);
+      } catch {
+        // Red caída u otro fallo al invocar la Server Action.
+        setSaveError("NO SE PUDO GUARDAR");
+      }
+    });
   };
   return (
     <div className="av-player fade-in">
@@ -150,16 +164,24 @@ export function GamePlayer({ game }: { game: Game }) {
             <div className="final-label">PUNTUACIÓN FINAL</div>
             <div className="final">{formatScore(finalScore)}</div>
             {!saved ? (
-              <div className="input-row">
-                <input
-                  value={name}
-                  onChange={(e) => setNameInput(e.target.value.toUpperCase().slice(0, 10))}
-                  placeholder="TUS INICIALES"
-                />
-                <button className="btn yellow" onClick={onSave}>
-                  GUARDAR PUNTUACIÓN
-                </button>
-              </div>
+              <>
+                <div className="input-row">
+                  <input
+                    value={name}
+                    onChange={(e) => setNameInput(e.target.value.toUpperCase().slice(0, 10))}
+                    placeholder="TUS INICIALES"
+                    disabled={saving}
+                  />
+                  <button className="btn yellow" onClick={onSave} disabled={saving}>
+                    {saving ? "GUARDANDO…" : "GUARDAR PUNTUACIÓN"}
+                  </button>
+                </div>
+                {saveError && (
+                  <div className="toast-error" role="alert">
+                    ▸ {saveError}_
+                  </div>
+                )}
+              </>
             ) : (
               <div className="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
             )}
